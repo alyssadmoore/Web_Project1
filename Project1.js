@@ -1,6 +1,6 @@
-// As usual, small "main" method sets up components of runner and starts game
+// As usual, small "main" method sets up objects of runner and starts game
 function startGame() {
-  runner = new component(32, 32, "running-person.png", 20, 150, "image")
+  runner = new object(32, 32, "running-person.png", 20, 150, "image")
   gameArea.start();
 }
 
@@ -28,21 +28,21 @@ var gameArea = {
    Includes methods update, newPosition and hitVerticalBound */
 function object(width, height, color, x, y, type) {
   this.type = type;
-  // Runner: only component of "image" type
+  // Runner: only object of "image" type
   if (type == "image") {
     this.image = new Image();
     this.image.src = color;
   }
-  // Size of component (runner, powerup, obstacle, etc.)
+  // Size of object (runner, powerup, obstacle, etc.)
   this.width = width;
   this.height = height;
-  // Placement of component
+  // Placement of object
   this.x = x;
   this.y = y;
-  // Speed at which the component is moving
+  // Speed at which the object is moving
   this.speedX = 0;
   this.speedY = 0;
-  // Gravity placed upon the component
+  // Gravity placed upon the object
   this.gravity = 0.05;
   // Change in gravity (aka velocity)
   this.gravitySpeed = 0;
