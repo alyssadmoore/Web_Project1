@@ -1,10 +1,9 @@
 var runner;
-var obstacle;
+var obstacles = [];
 
 // As usual, small "main" method sets up objects of runner and starts game
 function startGame() {
   runner = new object(32, 32, "running-person.png", 20, 150, "image")
-  obstacle  = new object(10, 200, "red", 300, 120);
   gameArea.start();
 }
 
@@ -23,12 +22,23 @@ var gameArea = {
     this.context = this.canvas.getContext("2d");
     document.body.insertBefore(this.canvas, document.body.childNodes[0]);
     this.interval = setInterval(updateGameArea, 20);
+    this.frameNum = 0;
   },
   clear : function() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   },
   stop : function() {
     clearInterval(this.interval);
+  }
+}
+
+/* Returns true when the current frame number cooresponds with the
+   given interval (n) so we can keep adding obstacles */
+function everyInterval(n) {
+    if ((gameArea.frameNum / n) % 1 == 0) {
+      return true;
+  } else {
+    return false;
   }
 }
 
@@ -112,18 +122,39 @@ function object(width, height, color, x, y, type) {
   }
 }
 
-/* Every time game area is updated we clear the screen,
-   decide new position(s), then redraw the game area (if no crash) */
+// Defines what happens each time the game area is updated (20 times/sec)
 function updateGameArea() {
-  if (runner.crashWith(obstacle)) {
-    gameArea.stop();
-  } else {
-    gameArea.clear();
-    obstacle.x += -1;
-    obstacle.update();
-    runner.newPosition();
-    runner.update();
+  var x;
+  var y;
+
+  // First, if there is a crash, pause game area
+  for (a = 0; a < obstacles.length; a += 1){
+    if (runner.crashWith(obstacles[a])) {
+      gameArea.stop();
+      return;
+    }
   }
+
+  // If no crash, start redrawing game area by clearing screen & adding 1 frame
+  gameArea.clear();
+  gameArea.frameNum += 1;
+
+  // At the beginning of the game or every 150 frames, add a new obstacle
+  if (gameArea.frameNum == 1 || everyInterval(150)) {
+    x = gameArea.canvas.width;
+    y = gameArea.canvas.height - 200;
+    obstacles.push(new object(10, 200, "red", x, y));
+  }
+
+  // Move the obstacles across the screen, right to left
+  for (b = 0; b < obstacles.length; b += 1) {
+    obstacles[b].x += -1;
+    obstacles[b].update();
+  }
+
+  // Finally, find runner's new position & update game area accordingly
+  runner.newPosition();
+  runner.update();
 }
 
 /* When the runner jumps, their image changes to a jumping person
