@@ -1,9 +1,11 @@
 var runner;
+var score;
 var obstacles = [];
 
 // As usual, small "main" method sets up objects of runner and starts game
 function startGame() {
   runner = new object(32, 32, "running-person.png", 20, 150, "image")
+  score = new object("30px", "Consolas", "black", 320, 30, "text");
   gameArea.start();
 }
 
@@ -69,6 +71,10 @@ function object(width, height, color, x, y, type) {
       context = gameArea.context;
       if (type == "image") {
         context.drawImage(this.image, this.x, this.y, this.width, this.height);
+      } else if (type == "text") {
+        context.font = this.width + " " + this.height;
+        context.fillStyle = color;
+        context.fillText(this.text, this.x, this.y);
       } else {
         context.fillStyle = color;
         context.fillRect(this.x, this.y, this.width, this.height);
@@ -153,7 +159,9 @@ function updateGameArea() {
     obstacles[b].update();
   }
 
-  // Finally, find runner's new position & update game area accordingly
+  // Finally, update score & runner's new position
+  score.text="Score: " + Math.floor(gameArea.frameNum/10);
+  score.update();
   runner.newPosition();
   runner.update();
 }
