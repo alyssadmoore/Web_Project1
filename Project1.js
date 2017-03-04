@@ -141,12 +141,13 @@ function updateGameArea() {
 
   // At the beginning of the game or every 150 frames, add a new obstacle
   if (gameArea.frameNum == 1 || everyInterval(150)) {
-    x = gameArea.canvas.width;
-    y = gameArea.canvas.height - 200;
-    obstacles.push(new object(10, 200, "red", x, y));
+    minHeight = 50;
+    maxHeight = 200;
+    height = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
+    obstacles.push(new object(10, gameArea.canvas.height, "red", gameArea.canvas.width, height));
   }
 
-  // Move the obstacles across the screen, right to left
+  // Move the obstacles across the screen, from right to left
   for (b = 0; b < obstacles.length; b += 1) {
     obstacles[b].x += -1;
     obstacles[b].update();
