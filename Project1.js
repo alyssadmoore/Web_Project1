@@ -5,7 +5,7 @@ var obstacles = [];
 // As usual, small "main" method sets up objects of runner and starts game
 function startGame() {
   runner = new object(32, 32, "running-person.png", 20, 150, "image")
-  score = new object("30px", "Consolas", "black", 320, 30, "text");
+  score = new object("30px", "Arial", "black", 320, 30, "text");
   gameArea.start();
 }
 
@@ -147,10 +147,15 @@ function updateGameArea() {
 
   // At the beginning of the game or every 150 frames, add a new obstacle
   if (gameArea.frameNum == 1 || everyInterval(150)) {
-    minHeight = 50;
+    x = gameArea.canvas.width;
+    minHeight = 30;
     maxHeight = 200;
-    height = Math.floor(Math.random() * (maxHeight - minHeight + 1)) + minHeight;
-    obstacles.push(new object(10, gameArea.canvas.height, "red", gameArea.canvas.width, height));
+    minGap = 50;
+    maxGap = 200;
+    height = Math.floor(Math.random() * (maxHeight - minHeight + 1) + minHeight);
+    gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap)
+    obstacles.push(new object(10, height, "red", x, 0));
+    obstacles.push(new object(10, (x - height - gap), "red", x, (height + gap)));
   }
 
   // Move the obstacles across the screen, from right to left
