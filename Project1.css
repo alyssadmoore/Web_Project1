@@ -5,6 +5,9 @@ canvas {
 
 button {
   position: fixed;
-  top: 280px;
+  top: 275px;
   left: 250px;
+  background-color: blue;
+  color: white;
+  font-size: 20px;
 }
