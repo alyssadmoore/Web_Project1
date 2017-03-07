@@ -1,12 +1,27 @@
 var runner;
 var score;
+var pop;
 var obstacles = [];
 
 // As usual, small "main" method sets up objects of runner and starts game
 function startGame() {
   runner = new object(32, 32, "running-person.png", 20, 150, "image")
   score = new object("30px", "Arial", "black", 320, 30, "text");
+  pop = new pop("pop.mp3");
   gameArea.start();
+}
+
+// Make a "pop" sound when the runner hits an obstacle
+function pop(src) {
+    this.pop = document.createElement("audio");
+    this.pop.src = src;
+    this.pop.setAttribute("preload", "auto");
+    this.pop.setAttribute("controls", "none");
+    this.pop.style.display = "none";
+    document.body.appendChild(this.pop);
+    this.play = function(){
+        this.pop.play();
+    }
 }
 
 /* Game area class contains canvas element, along with
@@ -136,6 +151,7 @@ function updateGameArea() {
   // First, if there is a crash, pause game area
   for (a = 0; a < obstacles.length; a += 1){
     if (runner.crashWith(obstacles[a])) {
+      pop.play();
       gameArea.stop();
       return;
     }
@@ -145,12 +161,14 @@ function updateGameArea() {
   gameArea.clear();
   gameArea.frameNum += 1;
 
-  // At the beginning of the game or every 150 frames, add a new obstacle
+  /* At the beginning of the game or every 150 frames, add 2 new obstacles:
+     one coming from below, and one from above (note bottom obstacle may not
+     appear if the top obstacle is low enough) */
   if (gameArea.frameNum == 1 || everyInterval(150)) {
     x = gameArea.canvas.width;
     minHeight = 30;
     maxHeight = 200;
-    minGap = 50;
+    minGap = 75;
     maxGap = 200;
     height = Math.floor(Math.random() * (maxHeight - minHeight + 1) + minHeight);
     gap = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap)
